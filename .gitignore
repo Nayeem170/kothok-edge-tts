@@ -1,0 +1,6 @@
+/target
+Cargo.lock
+.env
+*.secret
+/docs
+AGENTS.md

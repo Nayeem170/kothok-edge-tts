@@ -1,0 +1,30 @@
+[package]
+name = "kothok-edge-tts"
+version = "0.2.5"
+edition = "2021"
+rust-version = "1.75"
+description = "Microsoft Edge online text-to-speech client: neural voices via the Read Aloud WebSocket protocol (Sec-MS-GEC auth)"
+license = "MIT"
+readme = "README.md"
+keywords = ["tts", "edge-tts", "speech", "text-to-speech", "microsoft"]
+categories = ["api-bindings", "multimedia::audio"]
+repository = "https://github.com/Nayeem170/kothok-edge-tts"
+homepage = "https://github.com/Nayeem170/kothok-edge-tts"
+documentation = "https://docs.rs/kothok-edge-tts"
+
+[dependencies]
+tokio = { version = "1", features = ["rt", "time", "net", "io-util"] }
+tokio-tungstenite = { version = "0.24", features = ["rustls-tls-webpki-roots"] }
+tokio-rustls = "0.26"
+webpki-roots = "0.26"
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12", "logging"] }
+futures-util = "0.3"
+sha2 = "0.10"
+rand = "0.8"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "1"
+log = "0.4"
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt", "time"] }
