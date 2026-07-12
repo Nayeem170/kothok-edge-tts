@@ -11,7 +11,7 @@ use sha2::{Digest, Sha256};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 /// Long-stable trusted-client token embedded in the Edge extension.
-/// (Source: `edge-tts` / `rany2` — unchanged for years.)
+/// (Source: `edge-tts` / `rany2` - unchanged for years.)
 pub(crate) const TRUSTED_CLIENT_TOKEN: &str = "6A5AA1D4EAFF4E9FB37E23D68491D6F4";
 
 /// Edge stable-channel version string.  Microsoft rotates this on release
@@ -94,7 +94,7 @@ struct CivilDateTime {
 
 /// Convert a Unix timestamp (UTC) into a broken-down date-time.
 ///
-/// Uses Howard Hinnant's `days_from_civil` inverse algorithm — no external
+/// Uses Howard Hinnant's `days_from_civil` inverse algorithm - no external
 /// date crate required.
 fn civil_utc(secs: u64) -> CivilDateTime {
     let second = secs % SECS_PER_MINUTE;
@@ -106,7 +106,7 @@ fn civil_utc(secs: u64) -> CivilDateTime {
     let weekday = ((days + 4).rem_euclid(DAYS_PER_WEEK as i64)) as usize;
 
     // Howard Hinnant's civil_from_days: 719_468 = days from 0000-03-01 to
-    // 1970-01-01. Remaining constants are integral to the algorithm —
+    // 1970-01-01. Remaining constants are integral to the algorithm -
     // see https://howardhinnant.github.io/date_algorithms.html
     let z = days + 719_468;
     let era = if z >= 0 {
@@ -135,7 +135,7 @@ fn civil_utc(secs: u64) -> CivilDateTime {
 }
 
 /// Format a Unix timestamp as a JavaScript-style date string (Edge
-/// `X-Timestamp` header format).  Pure — no clock access.
+/// `X-Timestamp` header format).  Pure - no clock access.
 pub(crate) fn date_string(secs: u64) -> String {
     let dt = civil_utc(secs);
     format!(

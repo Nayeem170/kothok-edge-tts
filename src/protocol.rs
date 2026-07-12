@@ -66,7 +66,7 @@ pub(crate) fn split_msg(text: &str) -> (HashMap<String, String>, &str) {
 /// Parse an `audio.metadata` JSON body into word-boundary events.
 ///
 /// Non-`WordBoundary` entries are silently skipped.  Malformed JSON is logged
-/// at `warn` and yields an empty vec — the audio stream is unaffected.
+/// at `warn` and yields an empty vec - the audio stream is unaffected.
 pub(crate) fn parse_word_boundaries(body: &str) -> Vec<TtsEvent> {
     let Ok(md) = serde_json::from_str::<AudioMetadata>(body) else {
         log::warn!(

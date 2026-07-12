@@ -21,7 +21,7 @@ pub enum TtsEvent {
         text: String,
     },
 
-    /// The server signalled `turn.end` — no more audio or metadata will
+    /// The server signalled `turn.end` - no more audio or metadata will
     /// arrive for this request.
     TurnEnd,
 }

@@ -1,4 +1,4 @@
-//! `EdgeTts` — the concrete Edge Read-Aloud TTS engine.
+//! `EdgeTts` - the concrete Edge Read-Aloud TTS engine.
 //!
 //! Implements [`Engine`] by opening a fresh WebSocket per synthesis request,
 //! sending the `speech.config` and `ssml` messages, then collecting streamed
@@ -76,7 +76,7 @@ impl Engine for EdgeTts {
 }
 
 impl EdgeTts {
-    /// Full synthesis pipeline: connect → configure → request → receive.
+    /// Full synthesis pipeline: connect -> configure -> request -> receive.
     async fn run_synthesis(req: &SynthRequest<'_>) -> Result<Vec<TtsEvent>, TtsError> {
         let mut ws = Ws::connect().await?;
         Self::send_config(&mut ws).await?;

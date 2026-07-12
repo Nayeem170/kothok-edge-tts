@@ -1,4 +1,4 @@
-//! The `Engine` trait — the swappable TTS-backend contract.
+//! The `Engine` trait - the swappable TTS-backend contract.
 //!
 //! `EdgeTts` is the reference implementation.  Consumers that want to mock
 //! the engine in tests or swap in a different provider implement this trait.
@@ -15,11 +15,11 @@ use std::future::Future;
 ///
 /// # Arguments
 ///
-/// * `text`  — one utterance (callers chunk longer text; the Edge endpoint
+/// * `text`  - one utterance (callers chunk longer text; the Edge endpoint
 ///   caps a single request near ~4 KB).
-/// * `voice` — a full voice short-name, e.g. `"en-US-EmmaMultilingualNeural"`.
-/// * `rate`  — an SSML prosody rate string: `"+0%"`, `"+25%"`, `"-10%"`.
-/// * `lang`  — BCP-47 language tag for the `xml:lang` attribute, e.g. `"en-US"`.
+/// * `voice` - a full voice short-name, e.g. `"en-US-EmmaMultilingualNeural"`.
+/// * `rate`  - an SSML prosody rate string: `"+0%"`, `"+25%"`, `"-10%"`.
+/// * `lang`  - BCP-47 language tag for the `xml:lang` attribute, e.g. `"en-US"`.
 pub trait Engine: Send + Sync {
     fn synthesize(
         &self,

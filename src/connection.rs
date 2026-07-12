@@ -40,7 +40,7 @@ const SKEW_NUDGE_SECS: i64 = 60;
 /// Per-attempt timeout for DNS + TCP + TLS + WebSocket upgrade.
 const CONNECT_TIMEOUT: Duration = Duration::from_secs(10);
 
-/// MUID cookie byte length (random hex → 32 hex chars).
+/// MUID cookie byte length (random hex -> 32 hex chars).
 const MUID_BYTES: usize = 16;
 
 /// ConnectionId / X-RequestId byte length.

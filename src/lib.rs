@@ -24,8 +24,8 @@ pub use voice_list::{
 ///
 /// rustls 0.23 requires an explicit crypto provider before any TLS handshake.
 /// Call this **once** at startup, before the first [`EdgeTts`] connect.
-/// Idempotent — safe to call multiple times.
+/// Idempotent - safe to call multiple times.
 pub fn init_tls() {
-    // best-effort: idempotent — the provider may already be installed by the host
+    // best-effort: idempotent - the provider may already be installed by the host
     let _ = rustls::crypto::ring::default_provider().install_default();
 }

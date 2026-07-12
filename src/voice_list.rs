@@ -1,4 +1,4 @@
-//! Edge TTS voice catalogue — fetch the full list of available neural voices
+//! Edge TTS voice catalogue - fetch the full list of available neural voices
 //! from the Microsoft endpoint, with offline fallback tables and disk cache.
 //!
 //! [`list_voices`] performs a single HTTPS GET against the Edge voice-list
@@ -45,73 +45,49 @@ pub struct VoiceEntry {
 static DYNAMIC_VOICES: OnceLock<Vec<VoiceInfo>> = OnceLock::new();
 
 const VOICES_EN: &[VoiceEntry] = &[
-    VoiceEntry {
-        id: DEFAULT_VOICE_EN,
-        label: "Emma (English)",
-    },
-    VoiceEntry {
-        id: "en-US-AndrewMultilingualNeural",
-        label: "Andrew (English)",
-    },
-    VoiceEntry {
-        id: "en-US-AvaMultilingualNeural",
-        label: "Ava (English)",
-    },
+    VoiceEntry { id: "en-US-EmmaMultilingualNeural", label: "Emma (US)" },
+    VoiceEntry { id: "en-US-AndrewMultilingualNeural", label: "Andrew (US)" },
+    VoiceEntry { id: "en-US-AvaMultilingualNeural", label: "Ava (US)" },
+    VoiceEntry { id: "en-US-BrianNeural", label: "Brian (US)" },
+    VoiceEntry { id: "en-US-JennyNeural", label: "Jenny (US)" },
+    VoiceEntry { id: "en-US-GuyNeural", label: "Guy (US)" },
+    VoiceEntry { id: "en-GB-SoniaNeural", label: "Sonia (UK)" },
+    VoiceEntry { id: "en-GB-RyanNeural", label: "Ryan (UK)" },
+    VoiceEntry { id: "en-GB-LibbyNeural", label: "Libby (UK)" },
+    VoiceEntry { id: "en-AU-NatashaNeural", label: "Natasha (AU)" },
+    VoiceEntry { id: "en-AU-WilliamNeural", label: "William (AU)" },
+    VoiceEntry { id: "en-IN-NeerjaNeural", label: "Neerja (IN)" },
+    VoiceEntry { id: "en-CA-ClaraNeural", label: "Clara (CA)" },
+    VoiceEntry { id: "en-IE-EmilyNeural", label: "Emily (IE)" },
 ];
 
 const VOICES_BN: &[VoiceEntry] = &[
-    VoiceEntry {
-        id: DEFAULT_VOICE_BN,
-        label: "Nabanita (Bengali)",
-    },
-    VoiceEntry {
-        id: "bn-BD-PradeepNeural",
-        label: "Pradeep (Bengali)",
-    },
+    VoiceEntry { id: "bn-BD-NabanitaNeural", label: "Nabanita (BD)" },
+    VoiceEntry { id: "bn-BD-PradeepNeural", label: "Pradeep (BD)" },
+    VoiceEntry { id: "bn-IN-TanishaaNeural", label: "Tanishaa (IN)" },
+    VoiceEntry { id: "bn-IN-BashkarNeural", label: "Bashkar (IN)" },
 ];
 
 const VOICES_AR: &[VoiceEntry] = &[
-    VoiceEntry {
-        id: "ar-SA-HamedNeural",
-        label: "Hamed (Arabic)",
-    },
-    VoiceEntry {
-        id: "ar-SA-ZariyahNeural",
-        label: "Zariyah (Arabic)",
-    },
+    VoiceEntry { id: "ar-SA-HamedNeural", label: "Hamed (SA)" },
+    VoiceEntry { id: "ar-SA-ZariyahNeural", label: "Zariyah (SA)" },
+    VoiceEntry { id: "ar-EG-SalmaNeural", label: "Salma (EG)" },
+    VoiceEntry { id: "ar-EG-ShakirNeural", label: "Shakir (EG)" },
 ];
 
 const VOICES_HI: &[VoiceEntry] = &[
-    VoiceEntry {
-        id: "hi-IN-SwaraNeural",
-        label: "Swara (Hindi)",
-    },
-    VoiceEntry {
-        id: "hi-IN-MadhurNeural",
-        label: "Madhur (Hindi)",
-    },
+    VoiceEntry { id: "hi-IN-SwaraNeural", label: "Swara (IN)" },
+    VoiceEntry { id: "hi-IN-MadhurNeural", label: "Madhur (IN)" },
 ];
 
 const VOICES_JA: &[VoiceEntry] = &[
-    VoiceEntry {
-        id: "ja-JP-NanamiNeural",
-        label: "Nanami (Japanese)",
-    },
-    VoiceEntry {
-        id: "ja-JP-KeitaNeural",
-        label: "Keita (Japanese)",
-    },
+    VoiceEntry { id: "ja-JP-NanamiNeural", label: "Nanami (JP)" },
+    VoiceEntry { id: "ja-JP-KeitaNeural", label: "Keita (JP)" },
 ];
 
 const VOICES_TH: &[VoiceEntry] = &[
-    VoiceEntry {
-        id: "th-TH-PremwadeeNeural",
-        label: "Premwadee (Thai)",
-    },
-    VoiceEntry {
-        id: "th-TH-NiwatNeural",
-        label: "Niwat (Thai)",
-    },
+    VoiceEntry { id: "th-TH-PremwadeeNeural", label: "Premwadee (TH)" },
+    VoiceEntry { id: "th-TH-NiwatNeural", label: "Niwat (TH)" },
 ];
 
 pub fn normalize_lang(lang: &str) -> &'static str {
