@@ -72,7 +72,7 @@ async fn https_get(host: &str, path: &str) -> Result<String, TtsError> {
 
     let tcp = TcpStream::connect((host, HTTPS_PORT))
         .await
-        .map_err(|e| TtsError::Io(e))?;
+        .map_err(TtsError::Io)?;
 
     let mut tls = connector.connect(dns_name, tcp).await?;
 
@@ -97,6 +97,7 @@ async fn https_get(host: &str, path: &str) -> Result<String, TtsError> {
     Ok(response[body_start..].to_string())
 }
 
+#[allow(clippy::result_large_err)]
 fn tls_connector() -> Result<TlsConnector, TtsError> {
     let mut roots = rustls::RootCertStore::empty();
     roots.extend(webpki_roots::TLS_SERVER_ROOTS.iter().cloned());

@@ -54,17 +54,14 @@ const DAYS_PER_100_YEARS: u64 = 36_524;
 /// Days per year (non-leap).
 const DAYS_PER_YEAR: u64 = 365;
 
-/// Numerator offset for the month-of-year calculation in Hinnant's algorithm.
-const MONTH_NUMERATOR_OFFSET: u64 = 153;
+/// Numerator coefficient for the month-of-year calculation in Hinnant's algorithm.
+const MONTH_NUMERATOR_COEFF: u64 = 153;
 
-/// Denominator scale for the month-of-year calculation.
+/// Small numerator in the month-of-year division.
 const MONTH_SCALE: u64 = 5;
 
-/// Denominator for converting day-of-year to month index.
+/// Constant offset in both month-of-year divisions.
 const MONTH_DIVISOR: u64 = 2;
-
-/// Days offset for converting day-of-year to day-of-month.
-const MONTH_DAY_OFFSET: u64 = 2;
 
 /// Broken-down UTC date-time used to build the `X-Timestamp` header.
 struct CivilDateTime {
@@ -139,8 +136,8 @@ fn civil_utc(secs: u64) -> CivilDateTime {
         / DAYS_PER_YEAR;
     let y = yoe as i64 + era * 400;
     let doy = doe - (DAYS_PER_YEAR * yoe + yoe / 4 - yoe / 100);
-    let mp = (MONTH_NUMERATOR_OFFSET * doy + MONTH_DIVISOR) / MONTH_SCALE;
-    let day = doy - (MONTH_NUMERATOR_OFFSET * mp + MONTH_DAY_OFFSET) / MONTH_SCALE + 1;
+    let mp = (MONTH_SCALE * doy + MONTH_DIVISOR) / MONTH_NUMERATOR_COEFF;
+    let day = doy - (MONTH_NUMERATOR_COEFF * mp + MONTH_DIVISOR) / MONTH_SCALE + 1;
     let month = if mp < 10 { mp + 3 } else { mp - 9 } as usize;
     let year = (y + if month <= 2 { 1 } else { 0 }) as u64;
 

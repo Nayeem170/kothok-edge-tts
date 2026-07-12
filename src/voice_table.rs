@@ -96,7 +96,7 @@ pub fn normalize_lang(lang: &str) -> &'static str {
 /// hardcoded fallback tables if no dynamic voices are loaded.
 pub fn voices_for_lang(lang: &str) -> Cow<'static, [VoiceEntry]> {
     let normalized = normalize_lang(lang);
-    let prefix = normalized.split('-').next().unwrap_or(&normalized);
+    let prefix = normalized.split('-').next().unwrap_or(normalized);
 
     if let Some(dynamic) = DYNAMIC_VOICES.get() {
         let matching: Vec<VoiceEntry> = dynamic
@@ -114,7 +114,7 @@ pub fn voices_for_lang(lang: &str) -> Cow<'static, [VoiceEntry]> {
         }
     }
 
-    Cow::Borrowed(fallback_voices_for_lang(&normalized))
+    Cow::Borrowed(fallback_voices_for_lang(normalized))
 }
 
 /// Look up a human-readable label for a voice by its short-name.
@@ -149,7 +149,8 @@ pub(crate) fn format_voice_label(v: &VoiceInfo) -> String {
         .short_name()
         .splitn(3, '-')
         .nth(2)
-        .and_then(|s| s.strip_suffix("Neural"))
+        .map(|s| s.strip_suffix("Neural").unwrap_or(s))
+        .map(|s| s.strip_suffix("Multilingual").unwrap_or(s))
         .unwrap_or("Voice");
     format!("{name} ({})", v.locale())
 }
@@ -193,10 +194,8 @@ mod tests {
 
     #[test]
     fn fallback_voices_unknown_lang_returns_en() {
-        assert_eq!(
-            fallback_voices_for_lang("zz-ZZ").as_ptr(),
-            VOICES_EN.as_ptr()
-        );
+        let table = fallback_voices_for_lang("zz-ZZ");
+        assert_eq!(table, VOICES_EN);
     }
 
     #[test]
@@ -224,7 +223,7 @@ mod tests {
     #[test]
     fn format_label_unknown_format() {
         let v = VoiceInfo::new("x-Y-Z".into(), "x-Y".into(), "Male".into(), "Z".into());
-        assert_eq!(format_voice_label(&v), "Voice (x-Y)");
+        assert_eq!(format_voice_label(&v), "Z (x-Y)");
     }
 
     #[test]

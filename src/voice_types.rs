@@ -3,8 +3,6 @@
 use serde::{Deserialize, Serialize};
 use std::sync::OnceLock;
 
-use crate::voice_table;
-
 /// One voice entry from the Edge voice-list JSON response.
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct VoiceInfo {
@@ -19,7 +17,7 @@ pub struct VoiceInfo {
 }
 
 /// A voice with a short ID and a human-readable label for UI display.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct VoiceEntry {
     id: &'static str,
     label: &'static str,
@@ -29,6 +27,7 @@ pub struct VoiceEntry {
 pub(crate) static DYNAMIC_VOICES: OnceLock<Vec<VoiceInfo>> = OnceLock::new();
 
 impl VoiceInfo {
+    #[cfg(test)]
     pub(crate) fn new(
         short_name: String,
         locale: String,
@@ -145,6 +144,5 @@ mod tests {
         set_dynamic_voices(Vec::new());
         let stored = DYNAMIC_VOICES.get().unwrap();
         assert_eq!(stored.len(), 1);
-        DYNAMIC_VOICES.take();
     }
 }

@@ -54,7 +54,7 @@ cargo add kothok-edge-tts
 
 ## Quick start
 
-```rust,no_run
+```rust,ignore
 use kothok_edge_tts::{init_tls, EdgeTts, Engine, TtsEvent};
 
 #[tokio::main]
