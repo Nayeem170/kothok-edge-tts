@@ -13,7 +13,35 @@ pub(crate) const LOG_BODY_MAX_CHARS: usize = 160;
 const LINE_ENDING: &str = "\r\n";
 const HEADER_BODY_SEPARATOR: &str = "\r\n\r\n";
 
-// Binary frames:  [u16 BE header_len] [header bytes] [audio data]
+#[derive(Deserialize)]
+struct AudioMetadata {
+    #[serde(rename = "Metadata")]
+    metadata: Vec<MetaItem>,
+}
+
+#[derive(Deserialize)]
+struct MetaItem {
+    #[serde(rename = "Type")]
+    item_type: String,
+    #[serde(rename = "Data")]
+    data: MetaData,
+}
+
+#[derive(Deserialize)]
+struct MetaData {
+    #[serde(rename = "Offset")]
+    offset: u64,
+    #[serde(rename = "Duration")]
+    duration: u64,
+    #[serde(rename = "text")]
+    text: MetaText,
+}
+
+#[derive(Deserialize)]
+struct MetaText {
+    #[serde(rename = "Text")]
+    text: String,
+}
 
 /// Extract the audio payload from a binary WebSocket frame, if it is an
 /// `audio` frame (header contains `Path:audio`).
@@ -40,8 +68,6 @@ pub(crate) fn parse_binary_audio(bin: &[u8]) -> Option<Vec<u8>> {
         None
     }
 }
-
-// Text frames:  [headers\r\n]* \r\n\r\n [body]
 
 /// Split a text protocol message into a header map and a body slice.
 ///
@@ -71,7 +97,7 @@ pub(crate) fn parse_word_boundaries(body: &str) -> Vec<TtsEvent> {
     let Ok(md) = serde_json::from_str::<AudioMetadata>(body) else {
         log::warn!(
             "edge-tts: unparseable audio.metadata body: {}",
-            &body[..body.len().min(LOG_BODY_MAX_CHARS)]
+            body.chars().take(LOG_BODY_MAX_CHARS).collect::<String>()
         );
         return Vec::new();
     };
@@ -84,36 +110,6 @@ pub(crate) fn parse_word_boundaries(body: &str) -> Vec<TtsEvent> {
             text: item.data.text.text,
         })
         .collect()
-}
-
-#[derive(Deserialize)]
-struct AudioMetadata {
-    #[serde(rename = "Metadata")]
-    metadata: Vec<MetaItem>,
-}
-
-#[derive(Deserialize)]
-struct MetaItem {
-    #[serde(rename = "Type")]
-    item_type: String,
-    #[serde(rename = "Data")]
-    data: MetaData,
-}
-
-#[derive(Deserialize)]
-struct MetaData {
-    #[serde(rename = "Offset")]
-    offset: u64,
-    #[serde(rename = "Duration")]
-    duration: u64,
-    #[serde(rename = "text")]
-    text: MetaText,
-}
-
-#[derive(Deserialize)]
-struct MetaText {
-    #[serde(rename = "Text")]
-    text: String,
 }
 
 #[cfg(test)]
@@ -145,7 +141,6 @@ mod tests {
     fn parse_truncated_frame_returns_none() {
         assert!(parse_binary_audio(&[]).is_none());
         assert!(parse_binary_audio(&[0x00]).is_none());
-        // header_len claims 255 bytes but only 2 follow
         assert!(parse_binary_audio(&[0x00, 0xFF, b'x']).is_none());
     }
 

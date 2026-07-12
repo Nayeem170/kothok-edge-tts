@@ -29,6 +29,54 @@ const TICK_WINDOW_SECS: u64 = 300;
 /// 100-nanosecond intervals per second (Windows file-time granularity).
 const INTERVALS_PER_SEC: u64 = 10_000_000;
 
+const SECS_PER_MINUTE: u64 = 60;
+const SECS_PER_HOUR: u64 = 3_600;
+const SECS_PER_DAY: u64 = 86_400;
+const HOURS_PER_DAY: u64 = 24;
+const DAYS_PER_WEEK: usize = 7;
+const DAYS_PER_400_YEARS: i64 = 146_097;
+
+const WEEKDAYS: [&str; 7] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const MONTHS: [&str; 12] = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+/// Days from 0000-03-01 to 1970-01-01 in Howard Hinnant's civil calendar
+/// algorithm. See https://howardhinnant.github.io/date_algorithms.html
+const DAYS_UNIX_EPOCH_OFFSET: i64 = 719_468;
+
+/// Days in a 4-year Gregorian cycle.
+const DAYS_PER_4_YEARS: u64 = 1_460;
+
+/// Days in a 100-year Gregorian cycle.
+const DAYS_PER_100_YEARS: u64 = 36_524;
+
+/// Days per year (non-leap).
+const DAYS_PER_YEAR: u64 = 365;
+
+/// Numerator offset for the month-of-year calculation in Hinnant's algorithm.
+const MONTH_NUMERATOR_OFFSET: u64 = 153;
+
+/// Denominator scale for the month-of-year calculation.
+const MONTH_SCALE: u64 = 5;
+
+/// Denominator for converting day-of-year to month index.
+const MONTH_DIVISOR: u64 = 2;
+
+/// Days offset for converting day-of-year to day-of-month.
+const MONTH_DAY_OFFSET: u64 = 2;
+
+/// Broken-down UTC date-time used to build the `X-Timestamp` header.
+struct CivilDateTime {
+    weekday: usize,
+    year: u64,
+    month: usize,
+    day: u64,
+    hour: u64,
+    minute: u64,
+    second: u64,
+}
+
 /// Generate a random uppercase-hex string of `nbytes * 2` hex digits.
 ///
 /// Used for the `MUID` cookie, `ConnectionId`, and `X-RequestId` values.
@@ -66,32 +114,6 @@ pub(crate) fn sec_ms_gec(skew: i64) -> String {
         .collect()
 }
 
-// the Edge endpoint expects a JavaScript-style date string in
-// the X-Timestamp header; we compute it manually (no chrono dep).
-
-const WEEKDAYS: [&str; 7] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const MONTHS: [&str; 12] = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-];
-
-const SECS_PER_MINUTE: u64 = 60;
-const SECS_PER_HOUR: u64 = 3_600;
-const SECS_PER_DAY: u64 = 86_400;
-const HOURS_PER_DAY: u64 = 24;
-const DAYS_PER_WEEK: usize = 7;
-const DAYS_PER_400_YEARS: i64 = 146_097;
-
-/// Broken-down UTC date-time used to build the `X-Timestamp` header.
-struct CivilDateTime {
-    weekday: usize,
-    year: u64,
-    month: usize,
-    day: u64,
-    hour: u64,
-    minute: u64,
-    second: u64,
-}
-
 /// Convert a Unix timestamp (UTC) into a broken-down date-time.
 ///
 /// Uses Howard Hinnant's `days_from_civil` inverse algorithm - no external
@@ -105,21 +127,20 @@ fn civil_utc(secs: u64) -> CivilDateTime {
     // 1970-01-01 was a Thursday (index 4).
     let weekday = ((days + 4).rem_euclid(DAYS_PER_WEEK as i64)) as usize;
 
-    // Howard Hinnant's civil_from_days: 719_468 = days from 0000-03-01 to
-    // 1970-01-01. Remaining constants are integral to the algorithm -
-    // see https://howardhinnant.github.io/date_algorithms.html
-    let z = days + 719_468;
+    let z = days + DAYS_UNIX_EPOCH_OFFSET;
     let era = if z >= 0 {
         z / DAYS_PER_400_YEARS
     } else {
         (z - (DAYS_PER_400_YEARS - 1)) / DAYS_PER_400_YEARS
     };
     let doe = (z - era * DAYS_PER_400_YEARS) as u64;
-    let yoe = (doe - doe / 1460 + doe / 36_524 - doe / 146_096) / 365;
+    let yoe = (doe - doe / DAYS_PER_4_YEARS + doe / DAYS_PER_100_YEARS
+        - doe / DAYS_PER_400_YEARS as u64)
+        / DAYS_PER_YEAR;
     let y = yoe as i64 + era * 400;
-    let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
-    let mp = (5 * doy + 2) / 153;
-    let day = doy - (153 * mp + 2) / 5 + 1;
+    let doy = doe - (DAYS_PER_YEAR * yoe + yoe / 4 - yoe / 100);
+    let mp = (MONTH_NUMERATOR_OFFSET * doy + MONTH_DIVISOR) / MONTH_SCALE;
+    let day = doy - (MONTH_NUMERATOR_OFFSET * mp + MONTH_DAY_OFFSET) / MONTH_SCALE + 1;
     let month = if mp < 10 { mp + 3 } else { mp - 9 } as usize;
     let year = (y + if month <= 2 { 1 } else { 0 }) as u64;
 

@@ -154,8 +154,8 @@ Complete alphabetical list of everything exported from this crate.
 | `TtsError` | enum | Crate error type. Variants: `Connect`, `Ws`, `Io`, `NoAudio` |
 | `TtsEvent` | enum | Stream events. Variants: `Audio(Vec<u8>)`, `WordBoundary{offset, duration, text}`, `TurnEnd` |
 | `voice_label(voice_id)` | fn | Human-readable label for a voice ID: `"Nabanita (bn-BD)"` |
-| `VoiceEntry` | struct | UI-facing voice: `{ id: &str, label: &str }` |
-| `VoiceInfo` | struct | Server voice entry. Fields: `short_name`, `locale`, `gender`, `friendly_name` |
+| `VoiceEntry` | struct | UI-facing voice with `id()` and `label()` accessors |
+| `VoiceInfo` | struct | Server voice entry with `short_name()`, `locale()`, `gender()`, `friendly_name()` accessors |
 | `voices_for_lang(lang)` | fn | Get `VoiceEntry` list for a language (dynamic if fetched, fallback otherwise) |
 
 ## License

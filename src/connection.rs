@@ -40,6 +40,14 @@ const SKEW_NUDGE_SECS: i64 = 60;
 /// Per-attempt timeout for DNS + TCP + TLS + WebSocket upgrade.
 const CONNECT_TIMEOUT: Duration = Duration::from_secs(10);
 
+const HEADER_ORIGIN: &str = "origin";
+const HEADER_USER_AGENT: &str = "user-agent";
+const HEADER_COOKIE: &str = "cookie";
+const HEADER_PRAGMA: &str = "pragma";
+const HEADER_CACHE_CONTROL: &str = "cache-control";
+const HEADER_ACCEPT_LANGUAGE: &str = "accept-language";
+const HEADER_ACCEPT_ENCODING: &str = "accept-encoding";
+
 /// MUID cookie byte length (random hex -> 32 hex chars).
 const MUID_BYTES: usize = 16;
 
@@ -93,17 +101,23 @@ impl Ws {
 
         let mut req = url.into_client_request()?;
         let headers = req.headers_mut();
-        headers.insert("origin", HeaderValue::from_static(ORIGIN));
-        headers.insert("user-agent", HeaderValue::from_static(USER_AGENT));
+        headers.insert(HEADER_ORIGIN, HeaderValue::from_static(ORIGIN));
+        headers.insert(HEADER_USER_AGENT, HeaderValue::from_static(USER_AGENT));
         headers.insert(
-            "cookie",
+            HEADER_COOKIE,
             HeaderValue::from_str(&format!("muid={muid};"))
                 .map_err(|e| TtsError::Connect(format!("bad cookie header: {e}")))?,
         );
-        headers.insert("pragma", HeaderValue::from_static(NO_CACHE));
-        headers.insert("cache-control", HeaderValue::from_static(NO_CACHE));
-        headers.insert("accept-language", HeaderValue::from_static(ACCEPT_LANGUAGE));
-        headers.insert("accept-encoding", HeaderValue::from_static(ACCEPT_ENCODING));
+        headers.insert(HEADER_PRAGMA, HeaderValue::from_static(NO_CACHE));
+        headers.insert(HEADER_CACHE_CONTROL, HeaderValue::from_static(NO_CACHE));
+        headers.insert(
+            HEADER_ACCEPT_LANGUAGE,
+            HeaderValue::from_static(ACCEPT_LANGUAGE),
+        );
+        headers.insert(
+            HEADER_ACCEPT_ENCODING,
+            HeaderValue::from_static(ACCEPT_ENCODING),
+        );
 
         let (inner, resp) = tokio::time::timeout(CONNECT_TIMEOUT, connect_async(req))
             .await

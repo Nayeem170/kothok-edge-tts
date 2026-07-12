@@ -8,17 +8,21 @@ mod event;
 mod protocol;
 mod ssml;
 mod tts;
-mod voice_list;
+mod voice_cache;
+mod voice_fetch;
+mod voice_table;
+mod voice_types;
 
 pub use edge_tts::EdgeTts;
 pub use error::TtsError;
 pub use event::TtsEvent;
 pub use tts::Engine;
-pub use voice_list::{
-    list_voices, load_voice_cache, normalize_lang, save_voice_cache, set_dynamic_voices,
-    spawn_voice_fetch, voice_label, voices_for_lang, VoiceEntry, VoiceInfo, DEFAULT_VOICE_BN,
-    DEFAULT_VOICE_EN,
+pub use voice_cache::{load_voice_cache, save_voice_cache};
+pub use voice_fetch::{list_voices, spawn_voice_fetch};
+pub use voice_table::{
+    normalize_lang, voice_label, voices_for_lang, DEFAULT_VOICE_BN, DEFAULT_VOICE_EN,
 };
+pub use voice_types::{set_dynamic_voices, VoiceEntry, VoiceInfo};
 
 /// Install rustls's `ring` crypto provider.
 ///

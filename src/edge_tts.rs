@@ -28,6 +28,16 @@ const PATH_SSML: &str = "ssml";
 const MIME_JSON: &str = "application/json; charset=utf-8";
 const MIME_SSML: &str = "application/ssml+xml";
 
+const CFG_KEY_CONTEXT: &str = "context";
+const CFG_KEY_SYNTHESIS: &str = "synthesis";
+const CFG_KEY_AUDIO: &str = "audio";
+const CFG_KEY_METADATA_OPTIONS: &str = "metadataoptions";
+const CFG_KEY_SENTENCE_BOUNDARY_ENABLED: &str = "sentenceBoundaryEnabled";
+const CFG_KEY_WORD_BOUNDARY_ENABLED: &str = "wordBoundaryEnabled";
+const CFG_KEY_OUTPUT_FORMAT: &str = "outputFormat";
+const CFG_VAL_FALSE: &str = "false";
+const CFG_VAL_TRUE: &str = "true";
+
 struct SynthRequest<'a> {
     text: &'a str,
     voice: &'a str,
@@ -90,11 +100,11 @@ impl EdgeTts {
             "X-Timestamp:{timestamp}\r\n\
              Content-Type:{MIME_JSON}\r\n\
              Path:{PATH_SPEECH_CONFIG}\r\n\r\n\
-             {{\"context\":{{\"synthesis\":{{\"audio\":{{\
-             \"metadataoptions\":{{\
-             \"sentenceBoundaryEnabled\":\"false\",\
-             \"wordBoundaryEnabled\":\"true\"}},\
-             \"outputFormat\":\"{OUTPUT_FORMAT}\"}}}}}}}}\r\n"
+             {{\"{CFG_KEY_CONTEXT}\":{{\"{CFG_KEY_SYNTHESIS}\":{{\"{CFG_KEY_AUDIO}\":{{\
+             \"{CFG_KEY_METADATA_OPTIONS}\":{{\
+             \"{CFG_KEY_SENTENCE_BOUNDARY_ENABLED}\":\"{CFG_VAL_FALSE}\",\
+             \"{CFG_KEY_WORD_BOUNDARY_ENABLED}\":\"{CFG_VAL_TRUE}\"}},\
+             \"{CFG_KEY_OUTPUT_FORMAT}\":\"{OUTPUT_FORMAT}\"}}}}}}}}\r\n"
         );
         ws.send_text(config).await
     }
