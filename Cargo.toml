@@ -1,6 +1,6 @@
 [package]
 name = "kothok-edge-tts"
-version = "0.2.6"
+version = "0.2.7"
 edition = "2021"
 rust-version = "1.75"
 description = "Microsoft Edge online text-to-speech client: neural voices via the Read Aloud WebSocket protocol (Sec-MS-GEC auth)"
