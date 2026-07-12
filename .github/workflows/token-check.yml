@@ -29,7 +29,7 @@ jobs:
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `Token rotation detected — SEC_MS_GEC_VERSION is stale (${date})`,
+              title: `Token rotation detected - SEC_MS_GEC_VERSION is stale (${date})`,
               body: [
                 'The daily token health check failed. Microsoft has rotated `SEC_MS_GEC_VERSION`.',
                 '',

@@ -6,7 +6,7 @@
 //! `cargo test --test token_rotation -- --ignored`.
 //!
 //! When `SEC_MS_GEC_VERSION` goes stale, Microsoft returns HTTP 403 on the
-//! WebSocket handshake and this test fails — triggering a CI alert.
+//! WebSocket handshake and this test fails, triggering a CI alert.
 
 use kothok_edge_tts::{init_tls, EdgeTts, Engine, TtsEvent};
 use std::time::Duration;
@@ -16,7 +16,7 @@ use std::time::Duration;
 const SYNTH_TIMEOUT: Duration = Duration::from_secs(30);
 
 #[tokio::test]
-#[ignore = "live network test — run with: cargo test --test token_rotation -- --ignored"]
+#[ignore = "live network test - run with: cargo test --test token_rotation -- --ignored"]
 async fn sec_ms_gec_version_still_valid() {
     init_tls();
 
@@ -44,12 +44,12 @@ async fn sec_ms_gec_version_still_valid() {
              2. Update it in src/auth.rs.\n\
              3. Bump crate version and `cargo publish`."
         ),
-        Err(_) => panic!("synthesis timed out after {SYNTH_TIMEOUT:?} — server unreachable"),
+        Err(_) => panic!("synthesis timed out after {SYNTH_TIMEOUT:?}, server unreachable"),
     };
 
     let has_audio = events.iter().any(|e| matches!(e, TtsEvent::Audio(_)));
     assert!(
         has_audio,
-        "synthesis returned no audio — SEC_MS_GEC_VERSION may be stale"
+        "synthesis returned no audio, SEC_MS_GEC_VERSION may be stale"
     );
 }
