@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Nayeem Bin Ahsan
 //! Crate-level error type for Edge-TTS synthesis failures.
 
 use thiserror::Error;

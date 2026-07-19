@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Nayeem Bin Ahsan
 //! `EdgeTts` - the concrete Edge Read-Aloud TTS engine.
 //!
 //! Implements [`Engine`] by opening a fresh WebSocket per synthesis request,

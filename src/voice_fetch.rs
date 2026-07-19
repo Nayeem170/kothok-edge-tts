@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Nayeem Bin Ahsan
 //! HTTPS fetch of the Edge TTS voice catalogue.
 
 use crate::auth::{self, SEC_MS_GEC_VERSION, TRUSTED_CLIENT_TOKEN};

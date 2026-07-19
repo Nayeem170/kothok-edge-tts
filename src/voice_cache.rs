@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Nayeem Bin Ahsan
 //! Disk-cache persistence for the voice catalogue.
 
 use crate::voice_types::VoiceInfo;

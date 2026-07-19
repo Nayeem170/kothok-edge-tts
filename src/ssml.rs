@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Nayeem Bin Ahsan
 //! SSML document construction and text sanitization for Edge-TTS.
 
 const NEUTRAL_PITCH: &str = "+0Hz";

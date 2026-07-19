@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Nayeem Bin Ahsan
 //! `Sec-MS-GEC` DRM token generation and Edge-protocol time helpers.
 //!
 //! The Edge Read-Aloud endpoint requires a `Sec-MS-GEC` query parameter whose

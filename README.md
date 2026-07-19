@@ -46,6 +46,22 @@ Each `synthesize()` call does 4 things:
 
 Internal modules (`auth`, `connection`, `protocol`, `ssml`) are crate-private.
 
+## Network dependency
+
+This crate talks to Microsoft's Edge TTS service over the internet. There is no
+offline mode and no bundled voices.
+
+| Function | Network | Notes |
+|---|---|---|
+| `synthesize()` | **Required** | Each call opens a fresh WebSocket to `speech.platform.bing.com` |
+| `list_voices()` / `spawn_voice_fetch()` | **Required** | Fetches the voice catalogue from the Edge server |
+| `load_voice_cache()` / `save_voice_cache()` | Not needed | Reads/writes a local JSON file - works offline |
+| `voices_for_lang()` / `voice_label()` | Not needed | Pure lookups against the in-memory or cached voice list |
+
+On a Kobo, pair this with `kobo-core`'s `wifi_toggle` / `wifi_status` so the
+host app can bring the radio up before the first `synthesize()` and check
+connectivity before showing voice lists.
+
 ## Install
 
 ```bash

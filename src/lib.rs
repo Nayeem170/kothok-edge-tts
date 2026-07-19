@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Nayeem Bin Ahsan
 #![doc = include_str!("../README.md")]
 
 mod auth;
@@ -6,6 +8,7 @@ mod edge_tts;
 mod error;
 mod event;
 mod protocol;
+mod rate;
 mod ssml;
 mod tts;
 mod voice_cache;
@@ -23,6 +26,8 @@ pub use voice_table::{
     normalize_lang, voice_label, voices_for_lang, DEFAULT_VOICE_BN, DEFAULT_VOICE_EN,
 };
 pub use voice_types::{set_dynamic_voices, VoiceEntry, VoiceInfo};
+
+pub use rate::{rate_percent, rate_string, RATE_BASELINE_OFFSET};
 
 /// Install rustls's `ring` crypto provider.
 ///

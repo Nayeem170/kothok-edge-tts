@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Nayeem Bin Ahsan
 //! WebSocket connection management: URL construction, header injection,
 //! skew-retry, and a thin send/receive facade.
 //!

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Nayeem Bin Ahsan
 //! Streaming events emitted during a single synthesis turn.
 
 /// One item in the event stream produced by [`crate::Engine::synthesize`].

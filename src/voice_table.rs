@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Nayeem Bin Ahsan
 //! Static offline voice tables, language normalization, and label formatting.
 //!
 //! Fallback voice lists used when the dynamic voice catalogue is unavailable.
