@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Nayeem Bin Ahsan
 //! Shared voice types and the global dynamic-voice state.
 
 use serde::{Deserialize, Serialize};

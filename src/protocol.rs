@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Nayeem Bin Ahsan
 //! Wire-protocol parsing: binary audio-frame extraction, text-message header
 //! splitting, and `audio.metadata` JSON deserialization.
 

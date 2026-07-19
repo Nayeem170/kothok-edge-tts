@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Nayeem Bin Ahsan
 //! The `Engine` trait - the swappable TTS-backend contract.
 //!
 //! `EdgeTts` is the reference implementation.  Consumers that want to mock
