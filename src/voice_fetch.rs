@@ -21,6 +21,12 @@ const FETCH_USER_AGENT_HEADER: &str = "User-Agent";
 
 const FETCH_BUFFER_CAPACITY: usize = 64 * 1024;
 
+/// How many times to try the catalogue fetch before giving up. The list call
+/// often runs the instant WiFi connects, when the resolver is not ready yet
+/// (`EAI_AGAIN`); a few retries spaced a few seconds apart let DNS catch up.
+const FETCH_MAX_ATTEMPTS: u32 = 6;
+const FETCH_RETRY_DELAY: std::time::Duration = std::time::Duration::from_secs(5);
+
 /// Fetch the complete Edge-TTS voice catalogue.
 ///
 /// Requires [`crate::init_tls()`] to have been called first (installs the
@@ -55,13 +61,27 @@ pub fn spawn_voice_fetch() -> std::sync::mpsc::Receiver<Vec<VoiceInfo>> {
                 return;
             }
         };
-        match rt.block_on(list_voices()) {
-            Ok(voices) => {
-                // best-effort: if the receiver was dropped, no-op
-                let _ = tx.send(voices);
+        for attempt in 1..=FETCH_MAX_ATTEMPTS {
+            match rt.block_on(list_voices()) {
+                Ok(voices) => {
+                    let _ = tx.send(voices);
+                    return;
+                }
+                Err(e) => {
+                    log::warn!(
+                        "voice list fetch attempt {attempt}/{} failed: {e}",
+                        FETCH_MAX_ATTEMPTS
+                    );
+                    if attempt < FETCH_MAX_ATTEMPTS {
+                        std::thread::sleep(FETCH_RETRY_DELAY);
+                    }
+                }
             }
-            Err(e) => log::warn!("voice list fetch failed: {e}"),
         }
+        log::warn!(
+            "voice list fetch gave up after {} attempts",
+            FETCH_MAX_ATTEMPTS
+        );
     });
     rx
 }

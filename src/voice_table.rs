@@ -62,8 +62,102 @@ const VOICES_TH: &[VoiceEntry] = &[
     VoiceEntry::new("th-TH-NiwatNeural", "Niwat (TH)"),
 ];
 
+const VOICES_EL: &[VoiceEntry] = &[
+    VoiceEntry::new("el-GR-AthinaNeural", "Athina (GR)"),
+    VoiceEntry::new("el-GR-NestorasNeural", "Nestoras (GR)"),
+];
+
+const VOICES_RU: &[VoiceEntry] = &[
+    VoiceEntry::new("ru-RU-SvetlanaNeural", "Svetlana (RU)"),
+    VoiceEntry::new("ru-RU-DmitryNeural", "Dmitry (RU)"),
+];
+
+const VOICES_HE: &[VoiceEntry] = &[
+    VoiceEntry::new("he-IL-HilaNeural", "Hila (IL)"),
+    VoiceEntry::new("he-IL-AvriNeural", "Avri (IL)"),
+];
+
+const VOICES_KA: &[VoiceEntry] = &[
+    VoiceEntry::new("ka-GE-EkaNeural", "Eka (GE)"),
+    VoiceEntry::new("ka-GE-GiorgiNeural", "Giorgi (GE)"),
+];
+
+const VOICES_AM: &[VoiceEntry] = &[
+    VoiceEntry::new("am-ET-MekdesNeural", "Mekdes (ET)"),
+    VoiceEntry::new("am-ET-AmehaNeural", "Ameha (ET)"),
+];
+
+const VOICES_GU: &[VoiceEntry] = &[
+    VoiceEntry::new("gu-IN-DhwaniNeural", "Dhwani (IN)"),
+    VoiceEntry::new("gu-IN-NiranjanNeural", "Niranjan (IN)"),
+];
+
+const VOICES_TA: &[VoiceEntry] = &[
+    VoiceEntry::new("ta-IN-PallaviNeural", "Pallavi (IN)"),
+    VoiceEntry::new("ta-IN-ValluvarNeural", "Valluvar (IN)"),
+];
+
+const VOICES_TE: &[VoiceEntry] = &[
+    VoiceEntry::new("te-IN-ShrutiNeural", "Shruti (IN)"),
+    VoiceEntry::new("te-IN-MohanNeural", "Mohan (IN)"),
+];
+
+const VOICES_KN: &[VoiceEntry] = &[
+    VoiceEntry::new("kn-IN-SapnaNeural", "Sapna (IN)"),
+    VoiceEntry::new("kn-IN-GaganNeural", "Gagan (IN)"),
+];
+
+const VOICES_ML: &[VoiceEntry] = &[
+    VoiceEntry::new("ml-IN-SobhanaNeural", "Sobhana (IN)"),
+    VoiceEntry::new("ml-IN-MidhunNeural", "Midhun (IN)"),
+];
+
+const VOICES_SI: &[VoiceEntry] = &[
+    VoiceEntry::new("si-LK-ThiliniNeural", "Thilini (LK)"),
+    VoiceEntry::new("si-LK-SameeraNeural", "Sameera (LK)"),
+];
+
+const VOICES_LO: &[VoiceEntry] = &[
+    VoiceEntry::new("lo-LA-KeomanyNeural", "Keomany (LA)"),
+    VoiceEntry::new("lo-LA-ChanthavongNeural", "Chanthavong (LA)"),
+];
+
+const VOICES_KM: &[VoiceEntry] = &[
+    VoiceEntry::new("km-KH-SreymomNeural", "Sreymom (KH)"),
+    VoiceEntry::new("km-KH-PisethNeural", "Piseth (KH)"),
+];
+
+const VOICES_MY: &[VoiceEntry] = &[
+    VoiceEntry::new("my-MM-NilarNeural", "Nilar (MM)"),
+    VoiceEntry::new("my-MM-ThihaNeural", "Thiha (MM)"),
+];
+
+const VOICES_KO: &[VoiceEntry] = &[
+    VoiceEntry::new("ko-KR-SunHiNeural", "SunHi (KR)"),
+    VoiceEntry::new("ko-KR-InJoonNeural", "InJoon (KR)"),
+];
+
+const VOICES_ZH: &[VoiceEntry] = &[
+    VoiceEntry::new("zh-CN-XiaoxiaoNeural", "Xiaoxiao (CN)"),
+    VoiceEntry::new("zh-CN-YunyangNeural", "Yunyang (CN)"),
+];
+
+// Armenian and Punjabi (Gurmukhi) have no dedicated Edge voice. The
+// multilingual voice is the widest-coverage neural face, so it is the least
+// wrong choice for a script the catalogue does not otherwise cover.
+const VOICES_HY: &[VoiceEntry] = &[VoiceEntry::new(
+    "en-US-EmmaMultilingualNeural",
+    "Emma (Multi)",
+)];
+const VOICES_PA: &[VoiceEntry] = &[VoiceEntry::new(
+    "en-US-EmmaMultilingualNeural",
+    "Emma (Multi)",
+)];
+
 const ALL_FALLBACK: &[&[VoiceEntry]] = &[
-    VOICES_EN, VOICES_BN, VOICES_AR, VOICES_HI, VOICES_JA, VOICES_TH,
+    VOICES_EN, VOICES_BN, VOICES_AR, VOICES_HI, VOICES_JA, VOICES_TH, VOICES_EL, VOICES_RU,
+    VOICES_HE, VOICES_KA, VOICES_AM, VOICES_GU, VOICES_TA, VOICES_TE, VOICES_KN, VOICES_ML,
+    VOICES_SI, VOICES_LO, VOICES_KM, VOICES_MY, VOICES_KO, VOICES_ZH, VOICES_HY, VOICES_PA,
 ];
 
 /// Map a language tag (full BCP-47 or just a prefix like `"bn"`) to its
@@ -90,6 +184,21 @@ pub fn normalize_lang(lang: &str) -> &'static str {
         "tr" => "tr-TR",
         "id" => "id-ID",
         "vi" => "vi-VN",
+        "el" => "el-GR",
+        "he" | "iw" => "he-IL",
+        "ka" => "ka-GE",
+        "hy" => "hy-AM",
+        "am" => "am-ET",
+        "gu" => "gu-IN",
+        "pa" => "pa-IN",
+        "ta" => "ta-IN",
+        "te" => "te-IN",
+        "kn" => "kn-IN",
+        "ml" => "ml-IN",
+        "si" => "si-LK",
+        "lo" => "lo-LA",
+        "km" => "km-KH",
+        "my" => "my-MM",
         _ => "en-US",
     }
 }
@@ -142,6 +251,24 @@ fn fallback_voices_for_lang(normalized: &str) -> &'static [VoiceEntry] {
         "hi-IN" => VOICES_HI,
         "ja-JP" => VOICES_JA,
         "th-TH" => VOICES_TH,
+        "el-GR" => VOICES_EL,
+        "ru-RU" => VOICES_RU,
+        "he-IL" => VOICES_HE,
+        "ka-GE" => VOICES_KA,
+        "hy-AM" => VOICES_HY,
+        "am-ET" => VOICES_AM,
+        "gu-IN" => VOICES_GU,
+        "pa-IN" => VOICES_PA,
+        "ta-IN" => VOICES_TA,
+        "te-IN" => VOICES_TE,
+        "kn-IN" => VOICES_KN,
+        "ml-IN" => VOICES_ML,
+        "si-LK" => VOICES_SI,
+        "lo-LA" => VOICES_LO,
+        "km-KH" => VOICES_KM,
+        "my-MM" => VOICES_MY,
+        "ko-KR" => VOICES_KO,
+        "zh-CN" => VOICES_ZH,
         _ => VOICES_EN,
     }
 }
@@ -170,6 +297,29 @@ mod tests {
     }
 
     #[test]
+    fn normalize_extended_script_prefixes() {
+        assert_eq!(normalize_lang("el"), "el-GR");
+        assert_eq!(normalize_lang("ru"), "ru-RU");
+        assert_eq!(normalize_lang("he"), "he-IL");
+        assert_eq!(normalize_lang("iw"), "he-IL");
+        assert_eq!(normalize_lang("ka"), "ka-GE");
+        assert_eq!(normalize_lang("hy"), "hy-AM");
+        assert_eq!(normalize_lang("am"), "am-ET");
+        assert_eq!(normalize_lang("gu"), "gu-IN");
+        assert_eq!(normalize_lang("pa"), "pa-IN");
+        assert_eq!(normalize_lang("ta"), "ta-IN");
+        assert_eq!(normalize_lang("te"), "te-IN");
+        assert_eq!(normalize_lang("kn"), "kn-IN");
+        assert_eq!(normalize_lang("ml"), "ml-IN");
+        assert_eq!(normalize_lang("si"), "si-LK");
+        assert_eq!(normalize_lang("lo"), "lo-LA");
+        assert_eq!(normalize_lang("km"), "km-KH");
+        assert_eq!(normalize_lang("my"), "my-MM");
+        assert_eq!(normalize_lang("ko"), "ko-KR");
+        assert_eq!(normalize_lang("zh"), "zh-CN");
+    }
+
+    #[test]
     fn normalize_full_tag_passthrough() {
         assert_eq!(normalize_lang("bn-BD"), "bn-BD");
         assert_eq!(normalize_lang("hi-IN"), "hi-IN");
@@ -192,6 +342,20 @@ mod tests {
         assert!(!fallback_voices_for_lang("bn-BD").is_empty());
         assert!(!fallback_voices_for_lang("en-US").is_empty());
         assert!(!fallback_voices_for_lang("ar-SA").is_empty());
+    }
+
+    #[test]
+    fn fallback_voices_cover_every_loadable_script() {
+        for loc in [
+            "el-GR", "ru-RU", "he-IL", "ka-GE", "hy-AM", "am-ET", "gu-IN", "pa-IN", "ta-IN",
+            "te-IN", "kn-IN", "ml-IN", "si-LK", "lo-LA", "km-KH", "my-MM", "ko-KR", "zh-CN",
+        ] {
+            let table = fallback_voices_for_lang(loc);
+            assert!(
+                !table.is_empty() && table != VOICES_EN,
+                "{loc} must resolve to a dedicated voice table, not the English fallback"
+            );
+        }
     }
 
     #[test]
