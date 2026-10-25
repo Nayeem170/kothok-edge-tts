@@ -1,6 +1,6 @@
 [package]
 name = "kothok-edge-tts"
-version = "0.2.10"
+version = "0.2.11"
 edition = "2021"
 rust-version = "1.75"
 authors = ["Nayeem Bin Ahsan"]
@@ -20,7 +20,6 @@ tokio-rustls = "0.26"
 webpki-roots = "0.26"
 rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12", "logging"] }
 futures-util = "0.3"
-sha2 = "0.10"
 rand = "0.8"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

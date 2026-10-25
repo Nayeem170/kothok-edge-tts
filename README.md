@@ -144,6 +144,42 @@ Microsoft rotates the `SEC_MS_GEC_VERSION` constant on Edge release cycles. A
 (HTTP 403) and auto-creates a GitHub Issue with fix steps. Users should pin to
 the latest published version.
 
+## October 2026 protocol change: Sec-MS-GEC v2
+
+Microsoft upgraded the Edge Read-Aloud handshake in October 2026 to require a
+**v2** `Sec-MS-GEC` token (staged rollout; nodes with the new validation
+reject the legacy v1 token with HTTP 403 — tracked in
+[rany2/edge-tts#490](https://github.com/rany2/edge-tts/issues/490), fixed in
+[edge-tts 7.3.0](https://github.com/rany2/edge-tts/releases)).
+
+**This is not a stale `SEC_MS_GEC_VERSION`.** The v1 token (a 64-hex
+SHA-256) is simply no longer accepted; bumping the Edge version string does
+not help. The v2 token has the format `<16 hex>-<64 hex>` — a combination of
+a **CS64 digest** and an **adjusted SHA-256** over the same 5-minute-rounded
+Windows file-time + trusted-client-token input as before.
+
+### What changed in this repository
+
+- `src/token_v2.rs` (new): a faithful Rust port of the v2 algorithm from the
+  MIT-licensed [edge-tts 7.3.0 `drm.py`](https://github.com/rany2/edge-tts/blob/master/src/edge_tts/drm.py).
+  The constant tables in `src/token_v2_consts.rs` are machine-generated from
+  that file (no hand transcription).
+- `src/auth.rs`: `sec_ms_gec()` now generates v2 tokens; the
+  `SEC_MS_GEC_VERSION` prefix changed from `1-` to `2-`. Everything else —
+  the endpoint, `TrustedClientToken`, connection protocol, handshake retries
+  with clock-skew nudging — is unchanged.
+- Correctness is pinned by a differential test
+  (`v2_matches_python_reference`): the Rust output must be byte-identical to
+  the Python reference for six fixed timestamps (that Python implementation
+  was verified against the live service: a real `101 Switching Protocols`
+  handshake plus a full synthesis). The role-rotating round expansion in
+  `drm.py` was proven bitwise-identical to the standard SHA-256 round loop
+  and is implemented as such.
+- The `sha2` dependency was dropped (the adjusted digest is implemented
+  locally).
+
+For downstream users this is a drop-in upgrade: no public API changed.
+
 ## Acknowledgements
 
 Protocol logic ported from [**edge-tts**](https://github.com/rany2/edge-tts) by

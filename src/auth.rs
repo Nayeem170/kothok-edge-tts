@@ -9,7 +9,6 @@
 //! returns HTTP 403 and the connection layer retries with an adjusted skew.
 
 use rand::RngCore;
-use sha2::{Digest, Sha256};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 /// Long-stable trusted-client token embedded in the Edge extension.
@@ -19,17 +18,16 @@ pub(crate) const TRUSTED_CLIENT_TOKEN: &str = "6A5AA1D4EAFF4E9FB37E23D68491D6F4"
 /// Edge stable-channel version string.  Microsoft rotates this on release
 /// cycles; when every synthesis starts returning HTTP 403, re-pin this to the
 /// current Edge version and republish the crate.
-pub(crate) const SEC_MS_GEC_VERSION: &str = "1-143.0.3650.75";
+///
+/// October 2026: the token format was upgraded to v2, so the version prefix
+/// changed from `1-` to `2-`.  The Edge major version (143) is still accepted
+/// by the server; upstream edge-tts 7.3.0 kept it too (see
+/// rany2/edge-tts#490).
+pub(crate) const SEC_MS_GEC_VERSION: &str = "2-143.0.3650.75";
 
-/// Seconds between 1601-01-01 (Windows epoch) and 1970-01-01 (Unix epoch).
-const WIN_EPOCH: u64 = 11_644_473_600;
-
-/// The token is quantised to this window (5 minutes).  Values outside the
-/// current window are rejected by the server.
-const TICK_WINDOW_SECS: u64 = 300;
-
-/// 100-nanosecond intervals per second (Windows file-time granularity).
-const INTERVALS_PER_SEC: u64 = 10_000_000;
+// The v1 helpers (`WIN_EPOCH`, `TICK_WINDOW_SECS`, `INTERVALS_PER_SEC`) were
+// removed together with the v1 token; their v2 counterparts live in
+// `token_v2.rs`.
 
 const SECS_PER_MINUTE: u64 = 60;
 const SECS_PER_HOUR: u64 = 3_600;
@@ -96,21 +94,14 @@ fn unix_secs(skew: i64) -> u64 {
 
 /// Compute the `Sec-MS-GEC` token for the given clock skew.
 ///
-/// Algorithm: round the current Windows file-time down to a 5-min boundary,
-/// concatenate with the trusted client token, SHA-256 hash, uppercase-hex
-/// encode.  Matches `edge-tts` `DRM.generate_sec_ms_gec`.
+/// October 2026: Microsoft requires **v2** tokens (the legacy v1 token is
+/// rejected with HTTP 403 on nodes that have the new validation, see
+/// rany2/edge-tts#490).  The v2 token is a CS64 + adjusted-SHA-256
+/// combination over the same 5-minute-rounded Windows file-time input;
+/// see [`crate::token_v2`] (ported from edge-tts 7.3.0's MIT-licensed
+/// `drm.py`).
 pub fn sec_ms_gec(skew: i64) -> String {
-    let ticks = unix_secs(skew) + WIN_EPOCH;
-    let floored = ticks - (ticks % TICK_WINDOW_SECS);
-    let intervals = floored * INTERVALS_PER_SEC;
-
-    let mut hasher = Sha256::new();
-    hasher.update(format!("{intervals}{TRUSTED_CLIENT_TOKEN}").as_bytes());
-    hasher
-        .finalize()
-        .iter()
-        .map(|b| format!("{b:02X}"))
-        .collect()
+    crate::token_v2::generate_sec_ms_gec_v2(unix_secs(skew) as f64)
 }
 
 /// Convert a Unix timestamp (UTC) into a broken-down date-time.

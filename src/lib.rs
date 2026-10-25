@@ -10,6 +10,7 @@ mod event;
 mod protocol;
 mod rate;
 mod ssml;
+mod token_v2;
 mod tts;
 mod voice_cache;
 mod voice_fetch;

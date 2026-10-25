@@ -24,10 +24,14 @@ fn civil_utc_known_date() {
 }
 
 #[test]
-fn sec_ms_gec_is_hex_uppercase() {
+fn sec_ms_gec_is_v2_format() {
+    // Since October 2026 the token is v2: "<16 hex>-<64 hex>", uppercase.
     let token = sec_ms_gec(0);
-    assert_eq!(token.len(), 64);
-    assert!(token.chars().all(|c| c.is_ascii_hexdigit()));
+    assert_eq!(token.len(), 81);
+    let (head, tail) = token.split_once('-').expect("expected a '-' separator");
+    assert_eq!(head.len(), 16);
+    assert_eq!(tail.len(), 64);
+    assert!(token.chars().all(|c| c.is_ascii_hexdigit() || c == '-'));
     assert!(!token.chars().any(|c| c.is_ascii_lowercase()));
 }
 
